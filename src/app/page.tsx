@@ -10,18 +10,20 @@ import { Label } from "@/components/ui/label" // Importar Label
 import { Mail, Github, Linkedin, Code, Briefcase, User } from "lucide-react"
 import { useActionState } from "react" // Importar useActionState
 import { submitContactForm } from "./actions" // Importar o Server Action
+import GlobeBackground from "@/components/globe-bg" // Importar o componente GlobeBackground
+import ProjetosSection from "../components/projetos"
 
 export default function Home() {
   const [state, formAction, isPending] = useActionState(submitContactForm, null)
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-transparent text-white">
       <main>
         {/* Hero Section */}
-        <section id="hero" className="relative h-screen flex items-center justify-center bg-black text-center px-4">
+        <section id="hero" className="relative h-screen flex items-center justify-center bg-transparent text-center px-4">
           <div className="z-10 space-y-6">
             <h1 className="text-5xl md:text-7xl font-bold text-white">
-              Olá, eu sou <span className="text-purple-500">Seu Nome</span>
+              Olá, eu sou <span className="text-purple-500">Antonio Vinicius</span>
             </h1>
             <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto">
               Desenvolvedor Full-stack apaixonado por criar experiências digitais incríveis.
@@ -42,7 +44,7 @@ export default function Home() {
                 variant="outline"
                 className="border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white hover:bg-purple-500 px-8 py-6 text-lg rounded-full bg-transparent"
               >
-                <Link href="https://github.com/seurepositorio/seus-arquivos" target="_blank" rel="noopener noreferrer">
+                <Link href="https://github.com/AntonioviniciusA" target="_blank" rel="noopener noreferrer">
                   <Github className="w-5 h-5 mr-2" />
                   Ver Arquivos
                 </Link>
@@ -50,7 +52,11 @@ export default function Home() {
             </div>
           </div>
         </section>
-
+        <GlobeBackground 
+  showControlsHint={false}
+  autoRotateSpeed={0.9}
+  starDensity={900}
+/>
         {/* About Section */}
         <section id="about" className="py-20 bg-white text-black px-4 md:px-8">
           <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 items-center">
@@ -60,7 +66,7 @@ export default function Home() {
                 Sobre Mim
               </h2>
               <p className="text-lg leading-relaxed">
-                Sou um desenvolvedor com X anos de experiência, especializado em construir aplicações web robustas e
+                Sou um desenvolvedor com 2 anos de experiência, especializado em construir aplicações web robustas e
                 escaláveis. Minha paixão reside em transformar ideias complexas em soluções elegantes e funcionais.
               </p>
               <p className="text-lg leading-relaxed">
@@ -167,10 +173,10 @@ export default function Home() {
         </section>
 
         {/* Projects Section */}
-       
+       <ProjetosSection/>
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 bg-black text-white px-4 md:px-8">
+        <section id="contact" className="py-20 bg-transparent text-white px-4 md:px-8">
           <div className="max-w-2xl mx-auto text-center space-y-8">
             <h2 className="text-4xl font-bold flex items-center justify-center gap-2">
               <Mail className="w-8 h-8" />
@@ -243,11 +249,11 @@ export default function Home() {
 
             <div className="flex justify-center space-x-6 mt-8">
               <Link
-                href="mailto:seuemail@example.com"
+                href="mailto:antoniovinicius_@outlook.com"
                 className="text-purple-500 hover:text-purple-400 transition-colors flex items-center gap-2"
               >
                 <Mail className="w-8 h-8" />
-                <span className="text-xl">seuemail@example.com</span>
+                <span className="text-xl">antoniovinicius_@outlook.com</span>
               </Link>
               <Link
                 href="https://github.com/seugithub"
@@ -274,7 +280,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="py-8 bg-purple-500 text-white text-center text-sm">
-        <p>&copy; {new Date().getFullYear()} Seu Nome. Todos os direitos reservados.</p>
+        <p>&copy; {new Date().getFullYear()} Antonio Vinícius Alvino Silva. Todos os direitos reservados.</p>
       </footer>
     </div>
   )
