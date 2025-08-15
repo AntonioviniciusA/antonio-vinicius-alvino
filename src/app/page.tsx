@@ -12,6 +12,7 @@ import { useActionState } from "react" // Importar useActionState
 import { submitContactForm } from "./actions" // Importar o Server Action
 import GlobeBackground from "@/components/globe-bg" // Importar o componente GlobeBackground
 import ProjetosSection from "../components/projetos"
+import SkillsSection from '@/components/skills';
 
 export default function Home() {
   const [state, formAction, isPending] = useActionState(submitContactForm, null)
@@ -88,89 +89,7 @@ export default function Home() {
         </section>
 
         {/* Skills Section */}
-        <section id="skills" className="py-20 bg-purple-500 text-white px-4 md:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-12 flex items-center justify-center gap-2">
-              <Code className="w-8 h-8" />
-              Minhas Habilidades
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-  <div className="flex flex-col items-center space-y-2">
-    <Image
-      src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg"
-      width={64}
-      height={64}
-      alt="React logo"
-    />
-    <span className="text-lg font-semibold">React</span>
-  </div>
-  <div className="flex flex-col items-center space-y-2">
-    <Image
-      src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg"
-      width={64}
-      height={64}
-      alt="Next.js logo"
-    />
-    <span className="text-lg font-semibold">Next.js</span>
-  </div>
-  <div className="flex flex-col items-center space-y-2">
-    <Image
-      src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg"
-      width={64}
-      height={64}
-      alt="Node.js logo"
-    />
-    <span className="text-lg font-semibold">Node.js</span>
-  </div>
-  <div className="flex flex-col items-center space-y-2">
-    <Image
-      src="https://cdn.worldvectorlogo.com/logos/tailwindcss.svg"
-      width={64}
-      height={64}
-      alt="Tailwind CSS logo"
-    />
-    <span className="text-lg font-semibold">Tailwind CSS</span>
-  </div>
-  <div className="flex flex-col items-center space-y-2">
-    <Image
-      src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg"
-      width={64}
-      height={64}
-      alt="TypeScript logo"
-    />
-    <span className="text-lg font-semibold">TypeScript</span>
-  </div>
-  <div className="flex flex-col items-center space-y-2">
-    <Image
-      src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original.svg"
-      width={64}
-      height={64}
-      alt="PostgreSQL logo"
-    />
-    <span className="text-lg font-semibold">PostgreSQL</span>
-  </div>
-  <div className="flex flex-col items-center space-y-2">
-    <Image
-      src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg"
-      width={64}
-      height={64}
-      alt="Docker logo"
-    />
-    <span className="text-lg font-semibold">Docker</span>
-  </div>
-  <div className="flex flex-col items-center space-y-2">
-    <Image
-      src="https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg"
-      width={64}
-      height={64}
-      alt="Git logo"
-    />
-    <span className="text-lg font-semibold">Git</span>
-  </div>
-</div>
-
-          </div>
-        </section>
+       <SkillsSection />
 
         {/* Projects Section */}
        <ProjetosSection/>
