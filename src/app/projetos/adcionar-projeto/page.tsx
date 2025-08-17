@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Upload, Save, Eye } from "lucide-react"
-
+import  createProject  from "@/app/services/api"
 interface ProjectData {
   title: string
   description: string
@@ -52,11 +52,18 @@ export function AddProjectForm() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Dados do projeto:", formData)
-    // Aqui você pode implementar a lógica para salvar o projeto
-    alert("Projeto salvo com sucesso!")
+  const handleSubmit  = async (e: React.FormEvent) => {
+    try {
+      const response = await createProject(formData)
+
+      if (!response.ok) {
+        throw new Error("Erro ao salvar o projeto")
+      }
+
+      alert("Projeto salvo com sucesso!")
+    } catch (error) {
+      console.error("Erro ao salvar o projeto:", error)
+    }
   }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
