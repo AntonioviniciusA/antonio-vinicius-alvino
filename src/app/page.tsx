@@ -3,11 +3,11 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent,} from "@/components/ui/card"
 import { Input } from "@/components/ui/input" // Importar Input
 import { Textarea } from "@/components/ui/textarea" // Importar Textarea
 import { Label } from "@/components/ui/label" // Importar Label
-import { Mail, Github, Linkedin, Code, Briefcase, User } from "lucide-react"
+import { Mail, Github, Linkedin, User} from "lucide-react"
 import { useActionState } from "react" // Importar useActionState
 import { submitContactForm } from "./actions" // Importar o Server Action
 import GlobeBackground from "@/components/globe-bg" // Importar o componente GlobeBackground

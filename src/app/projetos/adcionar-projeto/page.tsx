@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Upload, Save, Eye } from "lucide-react"
-import  createProject  from "@/app/services/api"
+import  {createProject}  from "@/app/services/projects-services"
 interface ProjectData {
   title: string
   description: string
@@ -19,7 +19,7 @@ interface ProjectData {
   directoryJson: string
 }
 
-export function AddProjectForm() {
+export default function AddProjectForm() {
   const [formData, setFormData] = useState<ProjectData>({
     title: "",
     description: "",
@@ -52,11 +52,11 @@ export function AddProjectForm() {
     }
   }
 
-  const handleSubmit  = async (e: React.FormEvent) => {
+  const handleSubmit  = async (e: React.FormEvent, ) => {
     try {
       const response = await createProject(formData)
 
-      if (!response.ok) {
+      if (!response) {
         throw new Error("Erro ao salvar o projeto")
       }
 
