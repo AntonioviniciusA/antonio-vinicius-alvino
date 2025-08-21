@@ -52,19 +52,23 @@ export default function AddProjectForm() {
     }
   }
 
-  const handleSubmit  = async (e: React.FormEvent, ) => {
-    try {
-      const response = await createProject(formData)
-
-      if (!response) {
-        throw new Error("Erro ao salvar o projeto")
-      }
-
-      alert("Projeto salvo com sucesso!")
-    } catch (error) {
-      console.error("Erro ao salvar o projeto:", error)
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  try {
+    const response = await createProject(formData)
+    alert("Projeto salvo com sucesso!")
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Erro ao salvar o projeto:", error.message)
+      alert(`Erro: ${error.message}`)
+    } else {
+      console.error("Erro inesperado:", error)
+      alert("Erro inesperado ao salvar o projeto")
     }
   }
+}
+
+
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
