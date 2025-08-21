@@ -6,12 +6,18 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { title, description, image, link, slug, directoryJson } = body
 
-    const [result] = await db.query(
+    const [result, _] = await db.query(
       "INSERT INTO projects (title, description, image, link, slug, directoryJson) VALUES (?, ?, ?, ?, ?, ?)",
       [title, description, image, link, slug, directoryJson]
     )
 
-    return NextResponse.json({ success: true, id: result.insertId })
+    // If result is an array, get insertId from the first element
+    const insertId =
+      Array.isArray(result) && result.length > 0 && 'insertId' in result[0]
+        ? (result[0] as { insertId?: number }).insertId
+        : (result as { insertId?: number }).insertId
+
+    return NextResponse.json({ success: true, id: insertId })
   } catch (error) {
     console.error("Erro ao salvar projeto:", error)
     return NextResponse.json({ success: false, error: "Erro ao salvar projeto" }, { status: 500 })
