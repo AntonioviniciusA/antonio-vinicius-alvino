@@ -55,7 +55,19 @@ export default function AddProjectForm() {
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault()
   try {
-    const response = await createProject(formData)
+    let parsedDirectory = null
+    try {
+      parsedDirectory = JSON.parse(formData.directoryJson)
+    } catch {
+      alert("O JSON do diretório não é válido")
+      return
+    }
+
+    const response = await createProject({
+      ...formData,
+      directoryJson: JSON.stringify(parsedDirectory), // envia como string JSON válida
+    })
+
     alert("Projeto salvo com sucesso!")
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -67,6 +79,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
   }
 }
+
 
 
 

@@ -6,8 +6,8 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { title, description, image, link, slug, directoryJson } = body
 
-    const [result, _] = await db.query(
-      "INSERT INTO projects (title, description, image, link, slug, directoryJson) VALUES (?, ?, ?, ?, ?, ?)",
+    const [result] = await db.query(
+      "INSERT INTO projeto (nome, descricao, image, link, slug, diretoriojson) VALUES (?, ?, ?, ?, ?, ?)",
       [title, description, image, link, slug, directoryJson]
     )
 
