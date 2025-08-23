@@ -56,3 +56,17 @@ export async function updateProject(id: number, data: ProjectData): Promise<Proj
     throw new Error("Erro de conexão com servidor")
   }
 }
+
+export async function getProjectBySlug(slug: string): Promise<ProjectData> {
+  try {
+    const response = await axios.get<ProjectData>(`/api/projects/${slug}`)
+    return response.data
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        (error.response?.data as { error?: string })?.error || "Erro desconhecido"
+      )
+    }
+    throw new Error("Erro de conexão com servidor")
+  }
+}

@@ -113,7 +113,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               <div>
                 {formData.image && (
                   <img
-                    src={formData.image || "/placeholder.svg?height=200&width=300"}
+                    src={formData.image}
                     alt={formData.title}
                     className="w-full h-48 object-cover rounded-lg mb-4"
                   />
@@ -217,7 +217,6 @@ const handleSubmit = async (e: React.FormEvent) => {
                   id="image-url"
                   value={formData.image}
                   onChange={(e) => handleInputChange("image", e.target.value)}
-                  placeholder="/placeholder.svg?height=200&width=300"
                 />
                 <div className="text-center text-sm text-muted-foreground">ou</div>
                 <Input
@@ -231,7 +230,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               {formData.image && (
                 <div className="mt-2">
                   <img
-                    src={formData.image || "/placeholder.svg"}
+                    src={formData.image}
                     alt="Preview"
                     className="w-full h-32 object-cover rounded border"
                   />
