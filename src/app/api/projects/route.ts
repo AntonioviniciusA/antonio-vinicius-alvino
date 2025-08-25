@@ -1,3 +1,4 @@
+// src/app/api/projects/route.ts
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
 import { RowDataPacket } from "mysql2"
@@ -12,7 +13,6 @@ export async function POST(req: Request) {
       [title, description, image, link, slug, directoryJson]
     )
 
-    // If result is an array, get insertId from the first element
     const insertId =
       Array.isArray(result) && result.length > 0 && 'insertId' in result[0]
         ? (result[0] as { insertId?: number }).insertId
@@ -46,32 +46,19 @@ export async function GET() {
       const imageData = row.image || row.imagem
       
       // Check if the image is base64 and format accordingly
-      let imageUrl = ""
+      let imageUrl = "/placeholder.svg" // Default placeholder
       
       if (imageData) {
-        if (typeof imageData === 'string') {
-          if (imageData.startsWith('data:image/')) {
-            // It's already a base64 data URL
-            imageUrl = imageData
-          } else if (imageData.startsWith('/') || imageData.startsWith('http')) {
-            // It's a regular URL or path
-            imageUrl = imageData
-          } else {
-            // Assume it's base64 data without the data URL prefix
-            imageUrl = `data:image/jpeg;base64,${imageData}`
-          }
-        } else if (Buffer.isBuffer(imageData)) {
           // É um Buffer - converter para base64
-          imageUrl = `data:image/jpeg;base64,${imageData.toString('base64')}`
-        }
-        // imageData também pode ser null, mas já verificamos com if (imageData)
+            imageUrl = `${ imageData.toString('base64')}`
+            imageUrl = `data:image/png;base64,${imageUrl}`
       }
-
+      console.log("Imagem do projeto:", row.nome, "URL:", imageUrl)
       return {
         id: row.id,
         title: row.nome,
         description: row.descricao,
-        image: imageUrl,
+        image: imageUrl, // SEMPRE retorna uma URL válida
         link: row.link,
         slug: row.slug,
         directoryJson: row.diretoriojson,

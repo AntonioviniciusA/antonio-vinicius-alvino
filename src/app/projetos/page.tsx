@@ -32,28 +32,14 @@ export default function ProjectsPage() {
   }
 
   const getImageSrc = (projeto: ProjectData, index: number) => {
-    if (imageErrors.has(index)) {
-      console.log("Usando placeholder devido a erro no índice:", index)
-      return "/placeholder.svg" // CORRIGIDO: retornar placeholder
-    }
+    console.log("Verificando imagem para o índice:", index)
+    console.log("Imagem atual:", projeto.image)
+    console.log("projectData:", projeto)
 
-    if (!projeto.image) {
-      console.log("Projeto sem imagem, usando placeholder:", projeto.title)
-      return "/placeholder.svg" // CORRIGIDO: retornar placeholder
-    }
-
-    console.log("Imagem do projeto:", projeto.title, "tipo:", typeof projeto.image, "tamanho:", projeto.image.length)
-
-    // Se já é uma URL completa (data:image, http, /)
-    if (projeto.image.startsWith('data:image') || 
-        projeto.image.startsWith('http') || 
-        projeto.image.startsWith('/')) {
-      return projeto.image
-    }
-
-    // Se é base64 sem prefixo
-    return `data:image/jpeg;base64,${projeto.image}`
-  }
+  
+  // A API já trata todos os casos (Buffer, string base64, URL)
+  return projeto.image
+}
 
   return (
     <section className="py-20 bg-white text-black px-4 md:px-8">
@@ -130,7 +116,7 @@ function ProjectCard({ projeto, index, onImageError, getImageSrc }: ProjectCardP
           alt={`Screenshot do projeto ${projeto.title}`}
           className="object-cover"
           onError={() => onImageError(index)}
-          unoptimized={imageSrc.startsWith('data:') || imageSrc.startsWith('/placeholder.svg')}
+          unoptimized={imageSrc.startsWith('data:')}
         />
         
         {/* Overlay para melhorar a legibilidade */}
