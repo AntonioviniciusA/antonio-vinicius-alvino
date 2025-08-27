@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -31,15 +31,12 @@ export default function ProjectsPage() {
     setImageErrors(prev => new Set(prev).add(index))
   }
 
-  const getImageSrc = (projeto: ProjectData, index: number) => {
-    console.log("Verificando imagem para o índice:", index)
-    console.log("Imagem atual:", projeto.image)
-    console.log("projectData:", projeto)
-
-  
-  // A API já trata todos os casos (Buffer, string base64, URL)
-  return projeto.image
+const getImageSrc = (projeto: ProjectData, index: number) => {
+  if (!projeto.image) return "/fallback.jpg"
+  return projeto.image // se já vem em base64, é só devolver
 }
+
+
 
   return (
     <section className="py-20 bg-white text-black px-4 md:px-8">
@@ -73,7 +70,7 @@ interface ProjectCardProps {
 
 function ProjectCard({ projeto, index, onImageError, getImageSrc }: ProjectCardProps) {
   const imageContainerRef = useRef<HTMLDivElement>(null)
-  const imageSrc = getImageSrc(projeto, index)
+  const imageSrcimageSrc = getImageSrc(projeto, index)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!imageContainerRef.current) return
@@ -110,15 +107,13 @@ function ProjectCard({ projeto, index, onImageError, getImageSrc }: ProjectCardP
         ref={imageContainerRef}
         className="w-full h-48 overflow-hidden relative"
       >
-        <Image
-          src={imageSrc}
-          fill
-          alt={`Screenshot do projeto ${projeto.title}`}
-          className="object-cover"
-          onError={() => onImageError(index)}
-          unoptimized={imageSrc.startsWith('data:')}
-        />
-        
+<img
+  src={projeto.image || "/fallback.jpg"}
+  alt={projeto.title}
+  className="object-cover"
+/>
+
+
         {/* Overlay para melhorar a legibilidade */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>

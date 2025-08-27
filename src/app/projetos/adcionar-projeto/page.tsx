@@ -213,19 +213,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <div>
               <Label htmlFor="image">Imagem do Projeto</Label>
               <div className="space-y-2">
-                <Input
-                  id="image-url"
-                  value={formData.image}
-                  onChange={(e) => handleInputChange("image", e.target.value)}
-                />
-                <div className="text-center text-sm text-muted-foreground">ou</div>
-                <Input
-                  id="image-file"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="cursor-pointer"
-                />
+                <input type="file" accept="image/*" onChange={handleImageUpload} />
               </div>
               {formData.image && (
                 <div className="mt-2">

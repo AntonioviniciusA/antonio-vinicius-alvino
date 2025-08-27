@@ -91,15 +91,16 @@ export default function ProjetosSection() {
                   onMouseMove={(e) => handleMouseMove(e, index)}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <Image
-                    src={imageSrc}
-                    fill
-                    alt={`${project.title} screenshot`}
-                    className="object-cover transition-transform duration-300 ease-out"
-                    onError={() => handleImageError(index)}
-            
-                    priority={index < 3}
-                  />
+               <img
+  src={
+    project.image.startsWith("data:")
+      ? project.image
+      : `data:image/png;base64,${project.image}`
+  }
+  alt={project.title}
+  className="object-cover"
+/>
+
                   
                   {/* Overlay para melhor contraste */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
