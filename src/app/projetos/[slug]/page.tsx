@@ -35,7 +35,7 @@ interface ProjetoData {
   image: string
   link: string
   slug: string
-  directoryJson: string
+  directoryJson: string | FileSystemItem
   created_at: string
 }
 
@@ -69,6 +69,11 @@ interface ContentMatch {
 type SearchMode = "filename" | "content" | "both"
 
 function getFileIcon(fileName: string) {
+  // Verificação de segurança
+  if (!fileName || typeof fileName !== 'string') {
+    return <File className="w-4 h-4 text-gray-300" />
+  }
+  
   const extension = fileName.split(".").pop()?.toLowerCase()
   const baseName = fileName.toLowerCase()
 
@@ -504,17 +509,32 @@ export default function FileExplorer() {
   useEffect(() => {
     const loadProjeto = async () => {
       try {
+        setLoading(true)
+        setError(null)
+        
         const response = await fetch(`/api/projects/${slug}`)
-        if (!response.ok) {
-          throw new Error('Projeto não encontrado')
-        }
         const data = await response.json()
+        
+        if (!response.ok) {
+          throw new Error(data.error || `Erro ${response.status}: ${response.statusText}`)
+        }
+        
         setProjeto(data)
         
-        // Parse do diretoriojson e expandir diretórios principais
+        // Processar o diretoriojson (pode ser objeto ou string)
         if (data.directoryJson) {
           try {
-            const fileSystemData = JSON.parse(data.directoryJson)
+            let fileSystemData: FileSystemItem
+            
+            // Verificar se já é um objeto
+            if (typeof data.directoryJson === 'object' && data.directoryJson !== null) {
+              fileSystemData = data.directoryJson
+            } else if (typeof data.directoryJson === 'string') {
+              fileSystemData = JSON.parse(data.directoryJson)
+            } else {
+              throw new Error('Formato inválido para directoryJson')
+            }
+            
             const expanded = new Set<string>()
             
             // Função recursiva para expandir diretórios principais
@@ -537,10 +557,12 @@ export default function FileExplorer() {
             expandMainDirs(fileSystemData)
             setExpandedDirs(expanded)
           } catch (parseError) {
-            console.error('Erro ao fazer parse do diretoriojson:', parseError)
+            console.error('Erro ao processar diretoriojson:', parseError)
+            setError('Erro na estrutura de arquivos do projeto')
           }
         }
       } catch (err) {
+        console.error('Erro ao carregar projeto:', err)
         setError(err instanceof Error ? err.message : 'Erro ao carregar projeto')
       } finally {
         setLoading(false)
@@ -578,9 +600,19 @@ export default function FileExplorer() {
     if (!projeto?.directoryJson) return null
     
     try {
-      return JSON.parse(projeto.directoryJson)
+      // Se já for um objeto, retorne diretamente
+      if (typeof projeto.directoryJson === 'object' && projeto.directoryJson !== null) {
+        return projeto.directoryJson as FileSystemItem
+      }
+      
+      // Se for string, tente fazer parse
+      if (typeof projeto.directoryJson === 'string') {
+        return JSON.parse(projeto.directoryJson) as FileSystemItem
+      }
+      
+      return null
     } catch (error) {
-      console.error('Erro ao fazer parse do diretoriojson:', error)
+      console.error('Erro ao processar diretoriojson:', error)
       return null
     }
   }, [projeto?.directoryJson])
@@ -621,9 +653,16 @@ export default function FileExplorer() {
   if (error) {
     return (
       <div className="flex h-screen bg-gray-900 items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-400 text-xl mb-4">❌</div>
-          <p className="text-gray-400">{error}</p>
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="text-red-400 text-4xl mb-4">❌</div>
+          <h2 className="text-xl font-medium text-gray-300 mb-2">Erro ao carregar projeto</h2>
+          <p className="text-gray-400 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Tentar Novamente
+          </button>
         </div>
       </div>
     )
