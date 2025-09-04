@@ -1,5 +1,6 @@
 "use client"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
+import { useParams } from "next/navigation"
 import {
   ChevronRight,
   ChevronDown,
@@ -20,127 +21,22 @@ import {
   Search,
 } from "lucide-react"
 
-// Dados de exemplo
-const fileSystemData = {
-  _pastaraiz: {
-    type: "directory",
-    name: "meu-projeto-react",
-    children: [
-      {
-        type: "file",
-        name: "package.json",
-        content:
-          '{\n  "name": "meu-projeto-react",\n  "version": "1.0.0",\n  "scripts": {\n    "start": "react-scripts start",\n    "build": "react-scripts build",\n    "test": "react-scripts test",\n    "eject": "react-scripts eject"\n  },\n  "dependencies": {\n    "react": "^18.2.0",\n    "react-dom": "^18.2.0",\n    "react-scripts": "5.0.1"\n  },\n  "devDependencies": {\n    "@types/react": "^18.0.0",\n    "@types/react-dom": "^18.0.0"\n  }\n}',
-      },
-      {
-        type: "file",
-        name: "README.md",
-        content:
-          "# Meu Projeto React\n\nEste é um projeto criado com Create React App.\n\n## Como executar\n\n```bash\nnpm install\nnpm start\n```\n\n## Scripts disponíveis\n\n- `npm start` - Executa o app em modo de desenvolvimento\n- `npm run build` - Cria uma versão otimizada para produção\n- `npm test` - Executa os testes\n- `npm run eject` - Remove a dependência do react-scripts",
-      },
-      {
-        type: "directory",
-        name: "public",
-        children: [
-          {
-            type: "file",
-            name: "index.html",
-            content:
-              '<!DOCTYPE html>\n<html lang="pt-BR">\n  <head>\n    <meta charset="utf-8" />\n    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    <meta name="theme-color" content="#000000" />\n    <meta name="description" content="Meu projeto React" />\n    <title>Meu App React</title>\n  </head>\n  <body>\n    <noscript>Você precisa habilitar JavaScript para executar este app.</noscript>\n    <div id="root"></div>\n  </body>\n</html>',
-          },
-          {
-            type: "file",
-            name: "favicon.ico",
-            content: "// Arquivo binário do favicon",
-          },
-          {
-            type: "file",
-            name: "manifest.json",
-            content:
-              '{\n  "short_name": "React App",\n  "name": "Meu Projeto React",\n  "icons": [\n    {\n      "src": "favicon.ico",\n      "sizes": "64x64 32x32 24x24 16x16",\n      "type": "image/x-icon"\n    }\n  ],\n  "start_url": ".",\n  "display": "standalone",\n  "theme_color": "#000000",\n  "background_color": "#ffffff"\n}',
-          },
-        ],
-      },
-      {
-        type: "directory",
-        name: "src",
-        children: [
-          {
-            type: "file",
-            name: "index.js",
-            content:
-              "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport './index.css';\nimport App from './App';\nimport reportWebVitals from './reportWebVitals';\n\nconst root = ReactDOM.createRoot(document.getElementById('root'));\nroot.render(\n  <React.StrictMode>\n    <App />\n  </React.StrictMode>\n);\n\n// If you want to start measuring performance in your app, pass a function\n// to log results (for example: reportWebVitals(console.log))\n// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals\nreportWebVitals();",
-          },
-          {
-            type: "file",
-            name: "App.js",
-            content:
-              "import React, { useState, useEffect } from 'react';\nimport './App.css';\nimport Header from './components/Header';\nimport TodoList from './components/TodoList';\n\nfunction App() {\n  const [todos, setTodos] = useState([]);\n  const [loading, setLoading] = useState(true);\n\n  useEffect(() => {\n    // Simula carregamento de dados\n    setTimeout(() => {\n      setTodos([\n        { id: 1, text: 'Aprender React', completed: false },\n        { id: 2, text: 'Criar um projeto', completed: true },\n        { id: 3, text: 'Fazer deploy', completed: false }\n      ]);\n      setLoading(false);\n    }, 1000);\n  }, []);\n\n  const addTodo = (text) => {\n    const newTodo = {\n      id: Date.now(),\n      text,\n      completed: false\n    };\n    setTodos([...todos, newTodo]);\n  };\n\n  const toggleTodo = (id) => {\n    setTodos(todos.map(todo => \n      todo.id === id ? { ...todo, completed: !todo.completed } : todo\n    ));\n  };\n\n  if (loading) {\n    return <div className=\"loading\">Carregando...</div>;\n  }\n\n  return (\n    <div className=\"App\">\n      <Header title=\"Minha Lista de Tarefas\" />\n      <TodoList \n        todos={todos} \n        onAddTodo={addTodo} \n        onToggleTodo={toggleTodo} \n      />\n    </div>\n  );\n}\n\nexport default App;",
-          },
-          {
-            type: "file",
-            name: "App.css",
-            content:
-              ".App {\n  text-align: center;\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 20px;\n}\n\n.App-header {\n  background-color: #282c34;\n  padding: 20px;\n  color: white;\n  border-radius: 8px;\n  margin-bottom: 20px;\n}\n\n.loading {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n  font-size: 18px;\n  color: #666;\n}\n\nbutton {\n  background-color: #61dafb;\n  border: none;\n  padding: 10px 20px;\n  margin: 10px;\n  border-radius: 5px;\n  cursor: pointer;\n  font-size: 16px;\n  transition: background-color 0.3s;\n}\n\nbutton:hover {\n  background-color: #21a9c7;\n}\n\nbutton:disabled {\n  background-color: #ccc;\n  cursor: not-allowed;\n}",
-          },
-          {
-            type: "file",
-            name: "index.css",
-            content:
-              "body {\n  margin: 0;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  background-color: #f5f5f5;\n}\n\ncode {\n  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',\n    monospace;\n}\n\n* {\n  box-sizing: border-box;\n}\n\ninput {\n  padding: 8px 12px;\n  border: 1px solid #ddd;\n  border-radius: 4px;\n  font-size: 14px;\n}\n\ninput:focus {\n  outline: none;\n  border-color: #61dafb;\n}",
-          },
-          {
-            type: "directory",
-            name: "components",
-            children: [
-              {
-                type: "file",
-                name: "Header.js",
-                content:
-                  "import React from 'react';\n\nconst Header = ({ title }) => {\n  return (\n    <header className=\"App-header\">\n      <h1>{title}</h1>\n      <p>Gerencie suas tarefas de forma eficiente</p>\n    </header>\n  );\n};\n\nexport default Header;",
-              },
-              {
-                type: "file",
-                name: "TodoList.js",
-                content:
-                  'import React, { useState } from \'react\';\nimport TodoItem from \'./TodoItem\';\n\nconst TodoList = ({ todos, onAddTodo, onToggleTodo }) => {\n  const [inputValue, setInputValue] = useState(\'\');\n\n  const handleSubmit = (e) => {\n    e.preventDefault();\n    if (inputValue.trim()) {\n      onAddTodo(inputValue.trim());\n      setInputValue(\'\');\n    }\n  };\n\n  return (\n    <div className="todo-list">\n      <form onSubmit={handleSubmit} className="add-todo-form">\n        <input\n          type="text"\n          value={inputValue}\n          onChange={(e) => setInputValue(e.target.value)}\n          placeholder="Adicionar nova tarefa..."\n        />\n        <button type="submit">Adicionar</button>\n      </form>\n      \n      <div className="todos">\n        {todos.map(todo => (\n          <TodoItem\n            key={todo.id}\n            todo={todo}\n            onToggle={() => onToggleTodo(todo.id)}\n          />\n        ))}\n      </div>\n    </div>\n  );\n};\n\nexport default TodoList;',
-              },
-              {
-                type: "file",
-                name: "TodoItem.js",
-                content:
-                  "import React from 'react';\n\nconst TodoItem = ({ todo, onToggle }) => {\n  return (\n    <div className={`todo-item ${todo.completed ? 'completed' : ''}`}>\n      <input\n        type=\"checkbox\"\n        checked={todo.completed}\n        onChange={onToggle}\n      />\n      <span className=\"todo-text\">{todo.text}</span>\n    </div>\n  );\n};\n\nexport default TodoItem;",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        type: "directory",
-        name: "node_modules",
-        children: [
-          {
-            type: "directory",
-            name: "react",
-            children: [
-              {
-                type: "file",
-                name: "package.json",
-                content: '{\n  "name": "react",\n  "version": "18.2.0"\n}',
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-}
-
 interface FileSystemItem {
   type: "file" | "directory"
   name: string
   content?: string
   children?: FileSystemItem[]
+}
+
+interface ProjetoData {
+  id: number
+  title: string
+  description: string
+  image: string
+  link: string
+  slug: string
+  directoryJson: string
+  created_at: string
 }
 
 interface TreeNodeProps {
@@ -592,12 +488,69 @@ function FileViewer({ fileName, content, searchTerm, onClose }: FileViewerProps)
 }
 
 export default function FileExplorer() {
-  const [expandedDirs, setExpandedDirs] = useState<Set<string>>(new Set(["_pastaraiz", "_pastaraiz/src"]))
+  const params = useParams()
+  const slug = params.slug as string
+  
+  const [projeto, setProjeto] = useState<ProjetoData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [expandedDirs, setExpandedDirs] = useState<Set<string>>(new Set())
   const [selectedFile, setSelectedFile] = useState<string | null>(null)
   const [selectedContent, setSelectedContent] = useState<string>("")
   const [selectedFileName, setSelectedFileName] = useState<string>("")
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [searchMode, setSearchMode] = useState<SearchMode>("both")
+
+  useEffect(() => {
+    const loadProjeto = async () => {
+      try {
+        const response = await fetch(`/api/projects/${slug}`)
+        if (!response.ok) {
+          throw new Error('Projeto não encontrado')
+        }
+        const data = await response.json()
+        setProjeto(data)
+        
+        // Parse do diretoriojson e expandir diretórios principais
+        if (data.directoryJson) {
+          try {
+            const fileSystemData = JSON.parse(data.directoryJson)
+            const expanded = new Set<string>()
+            
+            // Função recursiva para expandir diretórios principais
+            const expandMainDirs = (item: FileSystemItem, path: string = "") => {
+              if (item.type === "directory") {
+                const currentPath = path ? `${path}/${item.name}` : item.name
+                expanded.add(currentPath)
+                
+                // Expandir apenas os primeiros níveis
+                if (item.children && path.split('/').length < 2) {
+                  item.children.forEach(child => {
+                    if (child.type === "directory") {
+                      expandMainDirs(child, currentPath)
+                    }
+                  })
+                }
+              }
+            }
+            
+            expandMainDirs(fileSystemData)
+            setExpandedDirs(expanded)
+          } catch (parseError) {
+            console.error('Erro ao fazer parse do diretoriojson:', parseError)
+          }
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erro ao carregar projeto')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (slug) {
+      loadProjeto()
+    }
+  }, [slug])
 
   const handleToggleDir = (path: string) => {
     const newExpanded = new Set(expandedDirs)
@@ -621,12 +574,21 @@ export default function FileExplorer() {
     setSelectedFileName("")
   }
 
-  const rootItem = fileSystemData._pastaraiz as FileSystemItem
+  const fileSystemData = useMemo(() => {
+    if (!projeto?.directoryJson) return null
+    
+    try {
+      return JSON.parse(projeto.directoryJson)
+    } catch (error) {
+      console.error('Erro ao fazer parse do diretoriojson:', error)
+      return null
+    }
+  }, [projeto?.directoryJson])
 
   const searchResults = useMemo(() => {
-    if (!searchTerm.trim()) return []
-    return searchFiles(rootItem, searchTerm, searchMode, "_pastaraiz")
-  }, [searchTerm, searchMode, rootItem])
+    if (!searchTerm.trim() || !fileSystemData) return []
+    return searchFiles(fileSystemData, searchTerm, searchMode, "")
+  }, [searchTerm, searchMode, fileSystemData])
 
   const effectiveExpandedDirs = useMemo(() => {
     if (!searchTerm.trim()) return expandedDirs
@@ -645,11 +607,46 @@ export default function FileExplorer() {
     return autoExpanded
   }, [expandedDirs, searchTerm, searchResults])
 
+  if (loading) {
+    return (
+      <div className="flex h-screen bg-gray-900 items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Carregando projeto...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen bg-gray-900 items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-400 text-xl mb-4">❌</div>
+          <p className="text-gray-400">{error}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!projeto || !fileSystemData) {
+    return (
+      <div className="flex h-screen bg-gray-900 items-center justify-center">
+        <div className="text-center">
+          <div className="text-gray-400 text-xl mb-4">📁</div>
+          <p className="text-gray-400">Projeto não encontrado ou sem estrutura de arquivos</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex h-screen bg-gray-900">
       <div className="w-80 bg-gray-800 border-r border-gray-700 flex flex-col">
         <div className="p-3 border-b border-gray-700">
-          <h2 className="text-gray-200 text-sm font-medium uppercase tracking-wide mb-3">Explorer</h2>
+          <h2 className="text-gray-200 text-sm font-medium uppercase tracking-wide mb-3">
+            {projeto.title}
+          </h2>
 
           <div className="relative mb-3">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -709,9 +706,9 @@ export default function FileExplorer() {
           ) : (
             <div className="py-2">
               <TreeNode
-                item={rootItem}
+                item={fileSystemData}
                 level={0}
-                path="_pastaraiz"
+                path={fileSystemData.name}
                 expandedDirs={effectiveExpandedDirs}
                 selectedFile={selectedFile}
                 searchTerm={searchTerm}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +15,7 @@ interface UserMe {
 }
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [user, setUser] = useState<UserMe | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,20 +28,21 @@ export default function ProfilePage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch("/api/auth/me");
+        const res = await fetch("/api/auth/me", { credentials: "include" });
+        if (!res.ok) {
+          router.replace("/login");
+          return;
+        }
         const data = await res.json();
-        if (!res.ok)
-          throw new Error(data?.error || "Falha ao carregar usuário");
         setUser(data);
       } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : "Erro inesperado";
-        setError(msg);
+        router.replace("/login");
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, []);
+  }, [router]);
 
   const onChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +52,7 @@ export default function ProfilePage() {
       const res = await fetch("/api/auth/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ currentPassword, newPassword }),
       });
       const data = await res.json();
@@ -65,8 +69,8 @@ export default function ProfilePage() {
   };
 
   const onLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    window.location.href = "/login";
+    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+    router.replace("/login");
   };
 
   if (loading) return <div className="p-6">Carregando...</div>;

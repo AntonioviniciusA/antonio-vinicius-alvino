@@ -1,8 +1,8 @@
 "use client";
 
 import type React from "react";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +21,7 @@ interface ProjectData {
 }
 
 export default function AddProjectForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState<ProjectData>({
     title: "",
     description: "",
@@ -31,6 +32,22 @@ export default function AddProjectForm() {
   });
 
   const [previewMode, setPreviewMode] = useState(false);
+
+  // Verifica autenticação
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch("/api/auth/me", { credentials: "include" });
+        if (!res.ok) {
+          router.replace("/login");
+          return;
+        }
+      } catch {
+        router.replace("/login");
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   const handleInputChange = (field: keyof ProjectData, value: string) => {
     setFormData((prev) => ({

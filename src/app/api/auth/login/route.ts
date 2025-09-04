@@ -4,7 +4,7 @@ import { RowDataPacket } from "mysql2";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
+const JWT_SECRET = process.env.JWT_SECRET;
 const COOKIE_NAME = "auth_token";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 dias
 
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
 
-    if (!email || !password) {
+    if (!email || !password || !JWT_SECRET) {
       return NextResponse.json(
         { error: "Credenciais inválidas" },
         { status: 400 }
@@ -34,18 +34,12 @@ export async function POST(req: Request) {
     const user = Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Usuário ou senha inválidos" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Usuário inválido" }, { status: 401 });
     }
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
-      return NextResponse.json(
-        { error: "Usuário ou senha inválidos" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "senha inválida" }, { status: 401 });
     }
 
     const token = jwt.sign(
